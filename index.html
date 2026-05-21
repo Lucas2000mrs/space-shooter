@@ -405,25 +405,6 @@ function drawPlayer(){
     ctx.ellipse(0,-5,10,18,0,0,Math.PI*2);
     ctx.fill();
 
-    for(let i=0;i<2;i++){
-
-        let side=i===0?-15:15;
-
-        ctx.fillStyle="orange";
-
-        ctx.beginPath();
-
-        ctx.moveTo(side,25);
-
-        ctx.lineTo(side-8,45+Math.random()*20);
-
-        ctx.lineTo(side+8,45+Math.random()*20);
-
-        ctx.closePath();
-
-        ctx.fill();
-    }
-
     ctx.restore();
 }
 
@@ -460,186 +441,31 @@ function drawEnemies(){
 
         enemy.y += enemy.speed;
 
-        ctx.save();
-
-        let alienColors = [
-
-            ["#ff0000","#220000"],
-            ["#00ff00","#002200"],
-            ["#9900ff","#1a001f"],
-            ["#00ffff","#001122"],
-            ["#ff8800","#331100"],
-            ["#ffffff","#444444"]
-
-        ];
-
-        let set = alienColors[(level-1)%alienColors.length];
-
-        ctx.shadowColor = set[0];
+        ctx.shadowColor = "red";
         ctx.shadowBlur = 35;
 
-        let g = ctx.createLinearGradient(
-            enemy.x,
-            enemy.y,
-            enemy.x+enemy.w,
-            enemy.y+enemy.h
-        );
-
-        g.addColorStop(0,set[0]);
-        g.addColorStop(1,set[1]);
-
-        ctx.fillStyle = g;
+        ctx.fillStyle = "#550000";
 
         ctx.beginPath();
 
         ctx.moveTo(enemy.x + enemy.w/2, enemy.y - 10);
-
-        ctx.lineTo(enemy.x + enemy.w - 5, enemy.y + 15);
-
-        ctx.lineTo(enemy.x + enemy.w + 8, enemy.y + enemy.h/2);
-
+        ctx.lineTo(enemy.x + enemy.w, enemy.y + 20);
         ctx.lineTo(enemy.x + enemy.w - 10, enemy.y + enemy.h);
-
-        ctx.lineTo(enemy.x + enemy.w/2, enemy.y + enemy.h - 10);
-
         ctx.lineTo(enemy.x + 10, enemy.y + enemy.h);
-
-        ctx.lineTo(enemy.x - 8, enemy.y + enemy.h/2);
-
-        ctx.lineTo(enemy.x + 5, enemy.y + 15);
+        ctx.lineTo(enemy.x, enemy.y + 20);
 
         ctx.closePath();
-
         ctx.fill();
 
-        ctx.fillStyle = "#111";
-
-        for(let i=0;i<4;i++){
-
-            ctx.beginPath();
-
-            ctx.moveTo(
-                enemy.x + 10 + i*12,
-                enemy.y + enemy.h - 5
-            );
-
-            ctx.lineTo(
-                enemy.x + 15 + i*12,
-                enemy.y + enemy.h + 15
-            );
-
-            ctx.lineTo(
-                enemy.x + 20 + i*12,
-                enemy.y + enemy.h - 5
-            );
-
-            ctx.closePath();
-
-            ctx.fill();
-        }
-
-        ctx.shadowColor = "red";
-        ctx.shadowBlur = 20;
-
-        ctx.fillStyle = "#ff0000";
+        ctx.fillStyle = "red";
 
         ctx.beginPath();
-        ctx.arc(
-            enemy.x + enemy.w/2 - 12,
-            enemy.y + enemy.h/2 - 5,
-            5,
-            0,
-            Math.PI*2
-        );
+        ctx.arc(enemy.x+20, enemy.y+30, 6, 0, Math.PI*2);
         ctx.fill();
 
         ctx.beginPath();
-        ctx.arc(
-            enemy.x + enemy.w/2 + 12,
-            enemy.y + enemy.h/2 - 5,
-            5,
-            0,
-            Math.PI*2
-        );
+        ctx.arc(enemy.x+50, enemy.y+30, 6, 0, Math.PI*2);
         ctx.fill();
-
-        ctx.fillStyle = "black";
-
-        ctx.beginPath();
-        ctx.arc(
-            enemy.x + enemy.w/2 - 12,
-            enemy.y + enemy.h/2 - 5,
-            2,
-            0,
-            Math.PI*2
-        );
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.arc(
-            enemy.x + enemy.w/2 + 12,
-            enemy.y + enemy.h/2 - 5,
-            2,
-            0,
-            Math.PI*2
-        );
-        ctx.fill();
-
-        ctx.strokeStyle = "#ff2222";
-        ctx.lineWidth = 3;
-
-        ctx.beginPath();
-
-        ctx.moveTo(
-            enemy.x + enemy.w/2 - 15,
-            enemy.y + enemy.h/2 + 15
-        );
-
-        ctx.lineTo(
-            enemy.x + enemy.w/2 - 8,
-            enemy.y + enemy.h/2 + 22
-        );
-
-        ctx.lineTo(
-            enemy.x + enemy.w/2,
-            enemy.y + enemy.h/2 + 16
-        );
-
-        ctx.lineTo(
-            enemy.x + enemy.w/2 + 8,
-            enemy.y + enemy.h/2 + 22
-        );
-
-        ctx.lineTo(
-            enemy.x + enemy.w/2 + 15,
-            enemy.y + enemy.h/2 + 15
-        );
-
-        ctx.stroke();
-
-        ctx.fillStyle = "#111";
-
-        ctx.beginPath();
-
-        ctx.moveTo(enemy.x, enemy.y + 20);
-        ctx.lineTo(enemy.x - 20, enemy.y + 40);
-        ctx.lineTo(enemy.x, enemy.y + 55);
-
-        ctx.closePath();
-
-        ctx.fill();
-
-        ctx.beginPath();
-
-        ctx.moveTo(enemy.x + enemy.w, enemy.y + 20);
-        ctx.lineTo(enemy.x + enemy.w + 20, enemy.y + 40);
-        ctx.lineTo(enemy.x + enemy.w, enemy.y + 55);
-
-        ctx.closePath();
-
-        ctx.fill();
-
-        ctx.restore();
 
         enemy.shootTimer++;
 
@@ -682,6 +508,20 @@ function drawEnemies(){
             }
         });
 
+        // Alien passou da tela
+        if(enemy.y > canvas.height){
+
+            enemies.splice(eIndex,1);
+
+            score -= 5;
+
+            if(score < 0){
+                score = 0;
+            }
+
+            scoreText.innerText = score;
+        }
+
         if(
             player.x-25 < enemy.x + enemy.w &&
             player.x+25 > enemy.x &&
@@ -719,35 +559,17 @@ function drawBoss(){
         boss.direction*=-1;
     }
 
-    ctx.save();
-
     ctx.shadowColor="red";
     ctx.shadowBlur=60;
 
-    let bossGradient=ctx.createLinearGradient(
+    ctx.fillStyle="#770000";
+
+    ctx.fillRect(
         boss.x,
         boss.y,
-        boss.x+boss.w,
-        boss.y+boss.h
+        boss.w,
+        boss.h
     );
-
-    bossGradient.addColorStop(0,"#330000");
-    bossGradient.addColorStop(0.5,"#ff0000");
-    bossGradient.addColorStop(1,"#ff9900");
-
-    ctx.fillStyle=bossGradient;
-
-    ctx.beginPath();
-
-    ctx.moveTo(boss.x+boss.w/2,boss.y);
-    ctx.lineTo(boss.x+boss.w,boss.y+60);
-    ctx.lineTo(boss.x+boss.w-30,boss.y+boss.h);
-    ctx.lineTo(boss.x+30,boss.y+boss.h);
-    ctx.lineTo(boss.x,boss.y+60);
-
-    ctx.closePath();
-
-    ctx.fill();
 
     ctx.fillStyle="white";
 
@@ -762,8 +584,6 @@ function drawBoss(){
     );
 
     ctx.fill();
-
-    ctx.restore();
 
     ctx.fillStyle="#222";
 
@@ -827,9 +647,6 @@ function drawEnemyBullets(){
 
         bullet.y+=bullet.speed;
 
-        ctx.shadowColor="red";
-        ctx.shadowBlur=20;
-
         ctx.fillStyle="red";
 
         ctx.fillRect(
@@ -838,8 +655,6 @@ function drawEnemyBullets(){
             bullet.w,
             bullet.h
         );
-
-        ctx.shadowBlur=0;
 
         if(bullet.y>canvas.height){
 
@@ -872,9 +687,6 @@ function drawMedkits(){
 
         medkit.y+=medkit.speed;
 
-        ctx.shadowColor="lime";
-        ctx.shadowBlur=20;
-
         ctx.fillStyle="white";
 
         ctx.fillRect(
@@ -899,8 +711,6 @@ function drawMedkits(){
             25,
             10
         );
-
-        ctx.shadowBlur=0;
 
         if(medkit.y>canvas.height){
 
